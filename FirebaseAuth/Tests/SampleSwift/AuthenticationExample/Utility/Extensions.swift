@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import FirebaseAuth
-import UIKit
 import SwiftUI
+import UIKit
 
 // MARK: - Compat. API for converting `UIColor` to `Color`
 
@@ -100,7 +100,7 @@ public extension UIViewController {
     }
   }
 
-  func displayError(_ error: (any Error)?, from function: StaticString = #function) {
+  @MainActor func displayError(_ error: (any Error)?, from function: StaticString = #function) {
     guard let error = error else { return }
     print("ⓧ Error in \(function): \(error.localizedDescription)")
     let message = "\(error.localizedDescription)\n\n Occurred in \(function)"
