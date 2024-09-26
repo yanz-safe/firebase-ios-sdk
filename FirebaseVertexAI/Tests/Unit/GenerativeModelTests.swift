@@ -1422,6 +1422,6 @@ struct AppCheckErrorFake: Error {}
 extension SafetyRating: Swift.Comparable {
   public static func < (lhs: FirebaseVertexAI.SafetyRating,
                         rhs: FirebaseVertexAI.SafetyRating) -> Bool {
-    return lhs.category.rawValue < rhs.category.rawValue
+    return lhs.category.category < rhs.category.category
   }
 }

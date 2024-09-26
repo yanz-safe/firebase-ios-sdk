@@ -97,21 +97,44 @@ public struct SafetySetting {
 }
 
 /// Categories describing the potential harm a piece of content may pose.
-public enum HarmCategory: String, Sendable {
+public struct HarmCategory: Sendable, Equatable, Hashable {
   /// Unknown. A new server value that isn't recognized by the SDK.
-  case unknown = "HARM_CATEGORY_UNKNOWN"
+  public static var unknown: HarmCategory {
+    return self.init(category: "HARM_CATEGORY_UNKNOWN")
+  }
 
   /// Harassment content.
-  case harassment = "HARM_CATEGORY_HARASSMENT"
+  public static var harassment: HarmCategory {
+    return self.init(category: "HARM_CATEGORY_HARASSMENT")
+  }
 
   /// Negative or harmful comments targeting identity and/or protected attributes.
-  case hateSpeech = "HARM_CATEGORY_HATE_SPEECH"
+  public static var hateSpeech: HarmCategory {
+    return self.init(category: "HARM_CATEGORY_HATE_SPEECH")
+  }
 
   /// Contains references to sexual acts or other lewd content.
-  case sexuallyExplicit = "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+  public static var sexuallyExplicit: HarmCategory {
+    return self.init(category: "HARM_CATEGORY_SEXUALLY_EXPLICIT")
+  }
 
   /// Promotes or enables access to harmful goods, services, or activities.
-  case dangerousContent = "HARM_CATEGORY_DANGEROUS_CONTENT"
+  public static var dangerousContent: HarmCategory {
+    return self.init(category: "HARM_CATEGORY_DANGEROUS_CONTENT")
+  }
+
+  static let allCategories = [
+    HarmCategory.harassment.category,
+    HarmCategory.hateSpeech.category,
+    HarmCategory.sexuallyExplicit.category,
+    HarmCategory.dangerousContent.category,
+  ]
+
+  let category: String
+
+  init(category: String) {
+    self.category = category
+  }
 }
 
 // MARK: - Codable Conformances
@@ -139,17 +162,17 @@ extension SafetyRating: Decodable {}
 @available(iOS 15.0, macOS 11.0, macCatalyst 15.0, tvOS 15.0, watchOS 8.0, *)
 extension HarmCategory: Codable {
   public init(from decoder: Decoder) throws {
-    let value = try decoder.singleValueContainer().decode(String.self)
-    guard let decodedCategory = HarmCategory(rawValue: value) else {
+    let category = try decoder.singleValueContainer().decode(String.self)
+    guard HarmCategory.allCategories.contains(category) else {
       VertexLog.error(
         code: .generateContentResponseUnrecognizedHarmCategory,
-        "Unrecognized HarmCategory with value \"\(value)\"."
+        "Unrecognized HarmCategory with value \"\(category)\"."
       )
       self = .unknown
       return
     }
 
-    self = decodedCategory
+    self.init(category: category)
   }
 }
 
