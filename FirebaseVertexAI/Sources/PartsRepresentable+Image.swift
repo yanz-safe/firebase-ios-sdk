@@ -39,11 +39,11 @@ enum ImageConversionError: Error {
   /// Enables images to be representable as ``ThrowingPartsRepresentable``.
   @available(iOS 15.0, macOS 11.0, macCatalyst 15.0, tvOS 15.0, watchOS 8.0, *)
   extension UIImage: ThrowingPartsRepresentable {
-    public func tryPartsValue() throws -> [ModelContent.Part] {
+    public func tryPartsValue() throws -> [any ModelContent.Part] {
       guard let data = jpegData(compressionQuality: imageCompressionQuality) else {
         throw ImageConversionError.couldNotConvertToJPEG
       }
-      return [ModelContent.Part.inlineData(mimetype: "image/jpeg", data)]
+      return [InlineDataPart(data: data, mimeType: "image/jpeg")]
     }
   }
 
@@ -69,7 +69,7 @@ enum ImageConversionError: Error {
   /// Enables `CGImages` to be representable as model content.
   @available(iOS 15.0, macOS 11.0, macCatalyst 15.0, tvOS 15.0, *)
   extension CGImage: ThrowingPartsRepresentable {
-    public func tryPartsValue() throws -> [ModelContent.Part] {
+    public func tryPartsValue() throws -> [any ModelContent.Part] {
       let output = NSMutableData()
       guard let imageDestination = CGImageDestinationCreateWithData(
         output, UTType.jpeg.identifier as CFString, 1, nil
@@ -81,7 +81,7 @@ enum ImageConversionError: Error {
         kCGImageDestinationLossyCompressionQuality: imageCompressionQuality,
       ] as CFDictionary)
       if CGImageDestinationFinalize(imageDestination) {
-        return [.inlineData(mimetype: "image/jpeg", output as Data)]
+        return [InlineDataPart(data: output as Data, mimeType: "image/jpeg")]
       }
       throw ImageConversionError.couldNotConvertToJPEG
     }
@@ -92,7 +92,7 @@ enum ImageConversionError: Error {
   /// Enables `CIImages` to be representable as model content.
   @available(iOS 15.0, macOS 11.0, macCatalyst 15.0, tvOS 15.0, *)
   extension CIImage: ThrowingPartsRepresentable {
-    public func tryPartsValue() throws -> [ModelContent.Part] {
+    public func tryPartsValue() throws -> [any ModelContent.Part] {
       let context = CIContext()
       let jpegData = (colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB))
         .flatMap {
@@ -102,7 +102,7 @@ enum ImageConversionError: Error {
           context.jpegRepresentation(of: self, colorSpace: $0, options: [:])
         }
       if let jpegData = jpegData {
-        return [.inlineData(mimetype: "image/jpeg", jpegData)]
+        return [InlineDataPart(data: jpegData, mimeType: "image/jpeg")]
       }
       throw ImageConversionError.couldNotConvertToJPEG
     }

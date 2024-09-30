@@ -144,14 +144,14 @@ class FunctionCallingViewModel: ObservableObject {
 
     for part in candidate.content.parts {
       switch part {
-      case let .text(text):
+      case let text as TextPart:
         // replace pending message with backend response
-        messages[messages.count - 1].message += text
+        messages[messages.count - 1].message += text.textValue
         messages[messages.count - 1].pending = false
-      case let .functionCall(functionCall):
+      case let functionCall as FunctionCall:
         messages.insert(functionCall.chatMessage(), at: messages.count - 1)
         functionCalls.append(functionCall)
-      case .inlineData, .fileData, .functionResponse:
+      default:
         fatalError("Unsupported response content.")
       }
     }
@@ -250,10 +250,6 @@ private extension FunctionResponse {
 
 private extension [FunctionResponse] {
   func modelContent() -> [ModelContent] {
-    return self.map { ModelContent(
-      role: "function",
-      parts: [ModelContent.Part.functionResponse($0)]
-    )
-    }
+    return self.map { ModelContent(role: "function", parts: [$0]) }
   }
 }
