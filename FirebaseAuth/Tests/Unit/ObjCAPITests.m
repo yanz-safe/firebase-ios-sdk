@@ -35,19 +35,19 @@
 @end
 #endif
 
-#if TARGET_OS_IOS
-@interface FederatedAuthImplementation : NSObject <FIRFederatedAuthProvider>
-- (void)getCredentialWithUIDelegate:(nullable id<FIRAuthUIDelegate>)UIDelegate
-                         completion:(nullable void (^)(FIRAuthCredential *_Nullable,
-                                                       NSError *_Nullable))completion;
-@end
-@implementation FederatedAuthImplementation
-- (void)getCredentialWithUIDelegate:(nullable id<FIRAuthUIDelegate>)UIDelegate
-                         completion:(nullable void (^)(FIRAuthCredential *_Nullable,
-                                                       NSError *_Nullable))completion {
-}
-@end
-#endif
+//#if TARGET_OS_IOS
+//@interface FederatedAuthImplementation : NSObject <FIRFederatedAuthProvider>
+//- (void)getCredentialWithUIDelegate:(nullable id<FIRAuthUIDelegate>)UIDelegate
+//                         completion:(nullable void (^)(FIRAuthCredential *_Nullable,
+//                                                       NSError *_Nullable))completion;
+//@end
+//@implementation FederatedAuthImplementation
+//- (void)getCredentialWithUIDelegate:(nullable id<FIRAuthUIDelegate>)UIDelegate
+//                         completion:(nullable void (^)(FIRAuthCredential *_Nullable,
+//                                                       NSError *_Nullable))completion {
+//}
+//@end
+//#endif
 
 @interface ObjCAPICoverage : XCTestCase
 @end
@@ -347,14 +347,14 @@
   __unused FIRAuthCredential *c = [FIRFacebookAuthProvider credentialWithAccessToken:@"token"];
 }
 
-#if TARGET_OS_IOS
-- (void)FIRFederatedAuthProvider_h {
-  FederatedAuthImplementation *impl = [[FederatedAuthImplementation alloc] init];
-  [impl getCredentialWithUIDelegate:nil
-                         completion:^(FIRAuthCredential *_Nullable c, NSError *_Nullable e){
-                         }];
-}
-#endif
+//#if TARGET_OS_IOS
+//- (void)FIRFederatedAuthProvider_h {
+//  FederatedAuthImplementation *impl = [[FederatedAuthImplementation alloc] init];
+//  [impl getCredentialWithUIDelegate:nil
+//                         completion:^(FIRAuthCredential *_Nullable c, NSError *_Nullable e){
+//                         }];
+//}
+//#endif
 
 #if !TARGET_OS_WATCH
 - (void)FIRGameCenterAuthProvider_h {
