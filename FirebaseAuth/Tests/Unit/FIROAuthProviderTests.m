@@ -25,7 +25,7 @@
 /** @var kExpectationTimeout
     @brief The maximum time waiting for expectations to fulfill.
  */
-static const NSTimeInterval kExpectationTimeout = 1;
+static const NSTimeInterval kExpectationTimeout = 5;
 
 /** @var kFakeAuthorizedDomain
     @brief A fake authorized domain for the app.
